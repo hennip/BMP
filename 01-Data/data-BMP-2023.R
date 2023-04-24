@@ -15,98 +15,65 @@ source("C:/tmp/path-main.r")
 
 
 #df0<-read_xlsx(paste0(pathMain,"01-Projects/BMP/data/2018/BMP_InnoTrea_Hennille_dailyincrease.xlsx"), range="C5:AC46", col_names = F)
-df0<-read_xlsx(paste0(pathMain,"01-Projects/BMP/data/2023/KOE_3.xlsx"), range="B4:AE36", col_names = F, sheet = "Koe3")
+df0<-read_xlsx(paste0(pathMain,"01-Projects/BMP/data/2023/KOE_3.xlsx"), range="B4:AG36", col_names = F, sheet = "Koe3")
 
 n_days<-dim(df0)[1];n_days
 #df_y<-cbind(rep(NA,n_days),df0[,2:3])
 df_y<-df0[,1:2]
-#n_types<-8
+n_types<-10
 
 tmpy<-df_y%>%
   mutate(day=1:n_days)%>%
   gather(key="pullo", value="arvo", `...1`:`...2`)%>%
   mutate(p=ifelse(pullo=="...1",1,ifelse(pullo=="...2",2,1)))%>%
   mutate(arvo=as.numeric(arvo))%>%
-  mutate(NAYTE="Inoculum")
+  mutate(NAYTE="Inoculum")%>%
+  group_by(p)%>%
+  mutate(cumul=cumsum(arvo))
 #View(tmpy)
 
-df_x1<-as.matrix(df0[,4:6])
-df_x2<-as.matrix(df0[,7:9])
-df_x3<-as.matrix(df0[,10:12])
-df_x4<-as.matrix(cbind(df0[,13],rep(NA,n_days),df0[,15]))#column 14 is removed (contains NA's)
-df_x5<-as.matrix(df0[,16:18])
-df_x6<-as.matrix(df0[,19:21])
-df_x7<-as.matrix(df0[,22:24])
-df_x8<-as.matrix(df0[,25:27])
+ExpName<-c("BJ", "TT1", "TT2", "TT3",
+           "PT1","PT2","PT3",
+           "S1","S2","S3")
+df_x<-list()          
+df_x[[1]]<-as.matrix(df0[,3:5])
+df_x[[2]]<-as.matrix(df0[,6:8])
+df_x[[3]]<-as.matrix(df0[,9:11])
+df_x[[4]]<-as.matrix(df0[,12:14])
+#df-x[[4]]<-as.matrix(cbind(df0[,13],rep(NA,n_days),df0[,15]))#column 14 is removed (contains NA's)
+df_x[[5]]<-as.matrix(df0[,15:17])
+df_x[[6]]<-as.matrix(df0[,18:20])
+df_x[[7]]<-as.matrix(df0[,21:23])
+df_x[[8]]<-as.matrix(df0[,24:26])
+df_x[[9]]<-as.matrix(df0[,27:29])
+df_x[[10]]<-as.matrix(df0[,30:32])
 
 
-ExpName<-c("Extracted pine bark", "Extracted spruce bark",
-           "Pine bark", "Spruce bark", 
-           "Separated pyro pine", "Separated pyro spruce",
-           "Centrifuged pyro pine", "Centrifuged pyro spruce")
+tmpx<-list()
+for(i in 1:10){
+#i<-3
+  tmpx[[i]]<-as_tibble(df_x[[i]])%>%
+  mutate(NAYTE=ExpName[i])%>%
+  mutate(day=1:n_days)%>%
+  gather(key="pullo", value="arvo",str_c("...",3*i):str_c("...",3*i+2))%>%
+  mutate(p=ifelse(pullo==str_c("...",3*i),1,ifelse(pullo==str_c("...",3*i+1),2,3)))%>%
+    group_by(pullo)%>%
+    mutate(cumul=cumsum(arvo))
+  
+}
 
 
-#ExpName<-c("Manty kuori uutettu", "Kuusi kuori uutettu",
-#           "Manty kuori", "Kuusi kuori", 
-#           "Manty pyro separoitu", "Kuusi pyro separoitu",
-#           "Manty pyro fuugattu", "Kuusi pyro fuugattu")
 
-tmpx1<-as.tibble(df_x1)%>%
-  mutate(NAYTE=ExpName[1])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...4`:`...6`)%>%
-  mutate(p=ifelse(pullo=="...4",1,ifelse(pullo=="...5",2,3)))
-
-tmpx2<-as.tibble(df_x2)%>%
-  mutate(NAYTE=ExpName[2])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...7`:`...9`)%>%
-  mutate(p=ifelse(pullo=="...7",1,ifelse(pullo=="...8",2,3)))
-
-tmpx3<-as.tibble(df_x3)%>%
-  mutate(NAYTE=ExpName[3])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...10`:`...12`)%>%
-  mutate(p=ifelse(pullo=="...10",1,ifelse(pullo=="...11",2,3)))
-
-tmpx4<-as.tibble(df_x4)%>%
-  mutate(NAYTE=ExpName[4])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...13`:`...15`)%>%
-  mutate(p=ifelse(pullo=="...13",1,ifelse(pullo=="...15",3,2)))
-
-tmpx5<-as.tibble(df_x5)%>%
-  mutate(NAYTE=ExpName[5])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...16`:`...18`)%>%
-  mutate(p=ifelse(pullo=="...16",1,ifelse(pullo=="...17",2,3)))
-
-tmpx6<-as.tibble(df_x6)%>%
-  mutate(NAYTE=ExpName[6])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...19`:`...21`)%>%
-  mutate(p=ifelse(pullo=="...19",1,ifelse(pullo=="...20",2,3)))
-
-tmpx7<-as.tibble(df_x7)%>%
-  mutate(NAYTE=ExpName[7])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...22`:`...24`)%>%
-  mutate(p=ifelse(pullo=="...22",1,ifelse(pullo=="...24",2,3)))
-
-tmpx8<-as.tibble(df_x8)%>%
-  mutate(NAYTE=ExpName[8])%>%
-  mutate(day=1:42)%>%
-  gather(key="pullo", value="arvo",`...25`:`...27`)%>%
-  mutate(p=ifelse(pullo=="...25",1,ifelse(pullo=="...27",2,3)))
-
-tmpx<-tmpx1%>%
-  full_join(tmpx2, by=NULL)%>%
-  full_join(tmpx3, by=NULL)%>%
-  full_join(tmpx4, by=NULL)%>%
-  full_join(tmpx5, by=NULL)%>%
-  full_join(tmpx6, by=NULL)%>%
-  full_join(tmpx7, by=NULL)%>%
-  full_join(tmpx8, by=NULL)%>%
-  full_join(tmpy, by=NULL)
+dat<-tmpx[[1]]%>%
+  full_join(tmpx[[2]], by=NULL)%>%
+  full_join(tmpx[[3]], by=NULL)%>%
+  full_join(tmpx[[4]], by=NULL)%>%
+  full_join(tmpx[[5]], by=NULL)%>%
+  full_join(tmpx[[6]], by=NULL)%>%
+  full_join(tmpx[[7]], by=NULL)%>%
+  full_join(tmpx[[8]], by=NULL)%>%
+  full_join(tmpx[[9]], by=NULL)%>%
+  full_join(tmpx[[10]], by=NULL)#%>%
+  #full_join(tmpy, by=NULL)
 
 
