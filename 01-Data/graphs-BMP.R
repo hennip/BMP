@@ -4,22 +4,85 @@
 #load(file=str_c(pathMain,"01-Projects/BMP/output/run1_koe3.RData"))
 
 #load(file=str_c(pathMain,"01-Projects/BMP/output/run2_koe3.RData"))
+# chains<-as.mcmc.list(run)
+df<-boxplot.jags.df(chains, "y_new",c(1:n_days[3]))
+df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
+ggplot(df, aes(day, group=day))+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity")+
+  labs(title="Ymppi, päivittäisen lisäyksen ennustejakaumat, koe 3", x="Päivä", y="Skaalaamaton kaasumäärä")+
+  geom_point(data=tmpy3,aes(x=day, y=arvo,color=pullo))+
+  #coord_cartesian(ylim=c(0,50))+
+  theme_bw()+
+  theme(legend.position="none") # removes legend
 
-chains<-as.mcmc.list(run)
-
-# YMPPI
-df<-boxplot.jags.df(chains, "y_new",c(1:n_days))
+df<-boxplot.jags.df(chains, "cum_y_new",c(1:33))
 df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
 
 ggplot(df, aes(day, group=day))+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
     stat = "identity")+
-  labs(title="YMPPI, päivittäisen lisäyksen ennustejakaumat", x="Päivä", y="Skaalaamaton kaasumäärä")+
-  geom_point(data=tmpy,aes(x=day, y=arvo,color=pullo))+
-  coord_cartesian(ylim=c(0,50))+
+  labs(title="Ymppi, kumulatiivinen kertymä, ennustejakaumat, koe 3", x="Päivä", y="Kumulatiivinen kaasumäärä")+
+  geom_point(data=tmpy3,aes(x=day, y=cumul,color=pullo))+
   theme_bw()+
   theme(legend.position="none") # removes legend
+
+
+
+chains<-as.mcmc.list(run)
+
+# YMPPI
+
+# Koe1
+df<-boxplot.jags.df(chains, "y_new1",c(1:n_days[1]))
+df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
+
+#g1<-
+  ggplot(df, aes(day, group=day))+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity")+
+  labs(title="Ymppi, päivittäisen lisäyksen ennustejakaumat, koe 1", x="Päivä", y="Skaalaamaton kaasumäärä")+
+  geom_point(data=tmpy1,aes(x=day, y=arvo,color=pullo))+
+  #coord_cartesian(ylim=c(0,50))+
+  theme_bw()+
+  theme(legend.position="none") # removes legend
+
+# Koe2
+df<-boxplot.jags.df(chains, "y_new2",c(1:n_days[2]))
+df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
+
+ggplot(df, aes(day, group=day))+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity")+
+  labs(title="Ymppi, päivittäisen lisäyksen ennustejakaumat, koe 2", x="Päivä", y="Skaalaamaton kaasumäärä")+
+  geom_point(data=tmpy2,aes(x=day, y=arvo,color=pullo))+
+  #coord_cartesian(ylim=c(0,50))+
+  theme_bw()+
+  theme(legend.position="none") # removes legend
+
+# Koe3
+df<-boxplot.jags.df(chains, "y_new3",c(1:n_days[3]))
+df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
+
+ggplot(df, aes(day, group=day))+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity")+
+  labs(title="Ymppi, päivittäisen lisäyksen ennustejakaumat, koe 3", x="Päivä", y="Skaalaamaton kaasumäärä")+
+  geom_point(data=tmpy3,aes(x=day, y=arvo,color=pullo))+
+  #coord_cartesian(ylim=c(0,50))+
+  theme_bw()+
+  theme(legend.position="none") # removes legend
+
+
+
+
+
+
 
 # YMPPI: keskiarvot
 df<-boxplot.jags.df(chains, "muy",c(1:n_days))
@@ -36,14 +99,14 @@ ggplot(df, aes(day, group=day))+
 
 
 # NÄYTTEET
-for(i in 1:n_types){
+for(i in 1:n_types3){
   #i<-1
-  df<-boxplot.jags.df2(chains, "x_new[",str_c(i,"]"),1:n_days)%>%
-    mutate(NAYTE=ExpName[i])
+  df<-boxplot.jags.df2(chains, "x_new[",str_c(i,"]"),1:33)%>%
+    mutate(NAYTE=ExpName3[i])
   ifelse(i>1, df2<-bind_rows(df2,df),df2<-df)
 }
 df2<-setNames(df2,c("day","q5","q25","q50","q75","q95","NAYTE"))
-df<-dat
+df<-dat3
 #df2<-filter(df2, NAYTE=="BJ"| NAYTE=="TT1")
 #df<-dat%>%filter(NAYTE=="BJ"| NAYTE=="TT1")
 
@@ -85,15 +148,39 @@ ggplot(df2, aes(day, group=day))+
 #source("data-BMP.r")
 
 #YMPPI; skaalaamaton
-df<-boxplot.jags.df(chains, "cum_y_new",c(1:n_days))
+df<-boxplot.jags.df(chains, "cum_y_new1",c(1:n_days[1]))
 df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
 
 ggplot(df, aes(day, group=day))+
   geom_boxplot(
     aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
     stat = "identity")+
-  labs(title="YMPPI, kumulatiivinen kertymä, ennustejakaumat", x="Päivä", y="Kumulatiivinen kaasumäärä")+
-  geom_point(data=tmpy,aes(x=day, y=cumul,color=pullo))+
+  labs(title="Ymppi, kumulatiivinen kertymä, ennustejakaumat, koe 1", x="Päivä", y="Kumulatiivinen kaasumäärä")+
+  geom_point(data=tmpy1,aes(x=day, y=cumul,color=pullo))+
+  theme_bw()+
+  theme(legend.position="none") # removes legend
+
+df<-boxplot.jags.df(chains, "cum_y_new2",c(1:n_days[2]))
+df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
+
+ggplot(df, aes(day, group=day))+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity")+
+  labs(title="Ymppi, kumulatiivinen kertymä, ennustejakaumat, koe 2", x="Päivä", y="Kumulatiivinen kaasumäärä")+
+  geom_point(data=tmpy2,aes(x=day, y=cumul,color=pullo))+
+  theme_bw()+
+  theme(legend.position="none") # removes legend
+
+df<-boxplot.jags.df(chains, "cum_y_new3",c(1:n_days[3]))
+df<-setNames(df,c("day","q5","q25","q50","q75","q95"))
+
+ggplot(df, aes(day, group=day))+
+  geom_boxplot(
+    aes(ymin = q5, lower = q25, middle = q50, upper = q75, ymax = q95),
+    stat = "identity")+
+  labs(title="Ymppi, kumulatiivinen kertymä, ennustejakaumat, koe 3", x="Päivä", y="Kumulatiivinen kaasumäärä")+
+  geom_point(data=tmpy3,aes(x=day, y=cumul,color=pullo))+
   theme_bw()+
   theme(legend.position="none") # removes legend
 
