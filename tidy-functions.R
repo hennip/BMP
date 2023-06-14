@@ -1,6 +1,6 @@
 boxplot.jags.df<-function(mcmc.chains, name, X){ # chain object, variable name, values to x-axis
   # note: length of x and dim variable need to match
-  Q5<-c();Q25<-c();Q50<-c();Q75<-c();Q95<-c()
+Q5<-c();Q25<-c();Q50<-c();Q75<-c();Q95<-c()
   n<-length(X)
   
   for(i in 1:n){
@@ -11,6 +11,7 @@ boxplot.jags.df<-function(mcmc.chains, name, X){ # chain object, variable name, 
     Q50[i] = tmp$quantiles[3]
     Q75[i] = tmp$quantiles[4]
     Q95[i] = tmp$quantiles[5]
+
   }
   
   df<-data.frame(
@@ -32,7 +33,7 @@ boxplot.jags.df2<-function(mcmc.chains, name1, name2, X){ # chain object, variab
   #name1<-"tulos["
   #name2<-"3]"
   #X<-1:61
-  Q5<-c();Q25<-c();Q50<-c();Q75<-c();Q95<-c()
+  ka<-Q5<-c();Q25<-c();Q50<-c();Q75<-c();Q95<-c()
   n<-length(X)
   
   for(i in 1:n){
@@ -44,17 +45,20 @@ boxplot.jags.df2<-function(mcmc.chains, name1, name2, X){ # chain object, variab
     Q50[i] = tmp$quantiles[3]
     Q75[i] = tmp$quantiles[4]
     Q95[i] = tmp$quantiles[5]
+    ka[i] = tmp$statistics[1]
+    
   }
   
   df<-data.frame(
     x<-X,
+    ka=ka,
     q5=Q5,
     q25=Q25,
     q50=Q50,
     q75=Q75,
     q95=Q95
   )
-  colnames(df)<-c("x","q5","q25","q50","q75","q95")
+  colnames(df)<-c("x","ka","q5","q25","q50","q75","q95")
   return(df)
 }
 

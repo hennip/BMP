@@ -140,8 +140,7 @@ cat(M2,file="test2.txt")
 data<-list(
   n_days=n_days,
   n_types=n_types,
-  const_x=rep(1,10),
-  const_y=1,
+  const_x=rep(1,n_types),
   x1=df_x[[1]],x2=df_x[[2]],x3=df_x[[3]],
   x4=df_x[[4]],x5=df_x[[5]],x6=df_x[[6]],
   x7=df_x[[7]],x8=df_x[[8]],
