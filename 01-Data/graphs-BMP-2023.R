@@ -36,7 +36,7 @@ make_df_nayte<-function(chains,n_types,n_days,name,expname){
 # ==============
 #load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe1.RData")) # Kaikki sarjat riippumattomia toisistaan
 #load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe1_const1.RData")) # Kaikki sarjat riippumattomia toisistaan
-load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe1_const12.RData")) # Kaikki sarjat riippumattomia toisistaan
+load(file=str_c("../../01-Projects/BMP/output/perus_koe1_const12.RData")) # Kaikki sarjat riippumattomia toisistaan
 #load(file=str_c(pathMain,"01-Projects/BMP/output/commonpsi&eta_koe1.RData"))
 chains<-as.mcmc.list(run)
 
@@ -89,7 +89,7 @@ chains<-as.mcmc.list(run)
 #load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe2.RData")) # Kaikki sarjat riippumattomia toisistaan
 #load(file=str_c(pathMain,"01-Projects/BMP/output/commonpsi&eta_koe2.RData")) # Ymppisarjoilla ja näytesarjoilla omat hier priorit cv:lle
 #load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe2_maxday10.RData"))
-load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe2_maxday10_const6.RData"))
+load(file=str_c("../../01-Projects/BMP/output/perus_koe2_maxday10_const6.RData"))
 chains<-as.mcmc.list(run)
 
 
@@ -109,10 +109,11 @@ chains<-as.mcmc.list(run)
   df<-make_df_nayte(chains,n_types[2], n_days_x[2], "x_new", expname= ExpName2)
   plotBMP(df,dat2,points=T,cumul=F,many=T,"NÄYTTEET, päivittäisen lisäyksen ennustejakaumat, koe 2", "Päivä", "Skaalaamaton kaasumäärä")
   
-  # kumulatiiviset
+  # kumulatiiviset HUOM! YLÄOTSIKKO MUUTETTU -> EXPERIMENT 1
   df<-make_df_nayte(chains,n_types[2], n_days_x[2], "cum_x_new", expname= ExpName2)
-  plotBMP(df,dat2,points=T,cumul=T,many=T,"Experiment 2, predicted cumulative methane production ", "Day", "Cumulative production of methane")
-
+  #plotBMP(df,dat2,points=T,cumul=T,many=T,"Experiment 2, predicted cumulative methane production ", "Day", "Cumulative production of methane")
+  plotBMP(df,dat2,points=T,cumul=T,many=T,"Experiment 1, predicted cumulative methane production ", "Day", "Cumulative production of methane")
+  
 # SKAALATUT EROTUKSET
 # ==============
   summary(run, var="tulos")
@@ -131,12 +132,15 @@ for(i in 2:4){
 }
 prob
 
+summary(run, var="tulos")
+
+
 
 ##############################################################################
 # Koe 3
 #load(file=str_c(pathMain,"01-Projects/BMP/output/perus_koe3.RData")) # Kaikki sarjat riippumattomia toisistaan
 #load(file=str_c(pathMain,"01-Projects/BMP/output/eta&psicommonfory_koe3.RData")) # Ymppisarjoilla hier priorit cv:lle
-load(file=str_c(pathMain,"01-Projects/BMP/output/eta&psicommonfory_koe3_const2.RData")) # Ymppisarjoilla hier priorit cv:lle
+load(file=str_c("../../01-Projects/BMP/output/eta&psicommonfory_koe3_const2.RData")) # Ymppisarjoilla hier priorit cv:lle
 chains<-as.mcmc.list(run)
 
 
@@ -156,9 +160,10 @@ plotBMP(df,tmpy3,points=T,cumul=T,many=F,"Ymppi, kumulatiivinen kertymä, ennust
 df<-make_df_nayte(chains,n_types[3], n_days_x[3], "x_new", expname= ExpName3)
 plotBMP(df,dat3,points=T,cumul=F,many=T,"NÄYTTEET, päivittäisen lisäyksen ennustejakaumat, koe 3", "Päivä", "Skaalaamaton kaasumäärä")
 
-# kumulatiiviset
+# kumulatiiviset HUOM! YLÄOTSIKKO MUUTETTU -> EXPERIMENT 2
 df<-make_df_nayte(chains,n_types[3], n_days_x[3], "cum_x_new", expname= ExpName3)
-plotBMP(df,dat3,points=T,cumul=T,many=T,"Experiment 3, predicted cumulative methane production ", "Day", "Cumulative production of methane")
+#plotBMP(df,dat3,points=T,cumul=T,many=T,"Experiment 3, predicted cumulative methane production ", "Day", "Cumulative production of methane")
+plotBMP(df,dat3,points=T,cumul=T,many=T,"Experiment 2, predicted cumulative methane production ", "Day", "Cumulative production of methane")
 
 # SKAALATUT EROTUKSET
 # ==============
