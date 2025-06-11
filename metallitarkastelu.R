@@ -1,10 +1,12 @@
 library(ggplot2)
+source("01-Data/data-BMP-2023.r")
+
 
 metallit<-read_xlsx("metallit.xlsx")
 metallit
 
 df_metals<-metallit |> pivot_longer(cols=c("Fe":"Zn"), names_to="metalli_tyyppi") |> 
-  rename(koe=expname) |> rename(metalli_pitoisuus=value)
+  rename(Experiment=expname) |> rename(metalli_pitoisuus=value)
 
 # Koe 2 (EXPERIMENT 1 PAPERISSA)
 load(file=str_c("../../01-Projects/BMP/output/perus_koe2_maxday10_const6.RData"))
@@ -20,9 +22,9 @@ y[,1]<-chains[,"cum_x_new[10,2]"][[1]] # 1WP10
 y[,2]<-chains[,"cum_x_new[10,3]"][[1]] # 1WP16.7
 y[,3]<-chains[,"cum_x_new[10,4]"][[1]] # 1WP23.3
 
-y1<-as.data.frame(y[,1])|> mutate(koe="1WP10") |> rename(methane="y[, 1]")
-y2<-as.data.frame(y[,2])|> mutate(koe="1WP16.7")|> rename(methane="y[, 2]")
-y3<-as.data.frame(y[,3])|> mutate(koe="1WP23.3")|> rename(methane="y[, 3]")
+y1<-as.data.frame(y[,1])|> mutate(Experiment="1WP10") |> rename(methane="y[, 1]")
+y2<-as.data.frame(y[,2])|> mutate(Experiment="1WP16.7")|> rename(methane="y[, 2]")
+y3<-as.data.frame(y[,3])|> mutate(Experiment="1WP23.3")|> rename(methane="y[, 3]")
 
 #summary((y[,3]-y_1_0)/y_1_0) # Kokeessa 1 tuhkalisäys huonontaa tulosta
 
@@ -69,15 +71,15 @@ summary((tulos_2W5-tulos_0)/tulos_0, quantiles=c(0.5,0.05,0.95))
 
 
 
-y4<-as.data.frame(y[,4])|> mutate(koe="2P2.5")|> rename(methane="y[, 4]")
-y5<-as.data.frame(y[,5])|> mutate(koe="2P5")|> rename(methane="y[, 5]")
-y6<-as.data.frame(y[,6])|> mutate(koe="2P7.5")|> rename(methane="y[, 6]")
-y7<-as.data.frame(y[,7])|> mutate(koe="2WP2.5")|> rename(methane="y[, 7]")
-y8<-as.data.frame(y[,8])|> mutate(koe="2WP5")|> rename(methane="y[, 8]")
-y9<-as.data.frame(y[,9])|> mutate(koe="2WP7.5")|> rename(methane="y[, 9]")
-y10<-as.data.frame(y[,10])|> mutate(koe="2W2.5")|> rename(methane="y[, 10]")
-y11<-as.data.frame(y[,11])|> mutate(koe="2W5")|> rename(methane="y[, 11]")
-y12<-as.data.frame(y[,12])|> mutate(koe="2W7.5")|> rename(methane="y[, 12]")
+y4<-as.data.frame(y[,4])|> mutate(Experiment="2P2.5")|> rename(methane="y[, 4]")
+y5<-as.data.frame(y[,5])|> mutate(Experiment="2P5")|> rename(methane="y[, 5]")
+y6<-as.data.frame(y[,6])|> mutate(Experiment="2P7.5")|> rename(methane="y[, 6]")
+y7<-as.data.frame(y[,7])|> mutate(Experiment="2WP2.5")|> rename(methane="y[, 7]")
+y8<-as.data.frame(y[,8])|> mutate(Experiment="2WP5")|> rename(methane="y[, 8]")
+y9<-as.data.frame(y[,9])|> mutate(Experiment="2WP7.5")|> rename(methane="y[, 9]")
+y10<-as.data.frame(y[,10])|> mutate(Experiment="2W2.5")|> rename(methane="y[, 10]")
+y11<-as.data.frame(y[,11])|> mutate(Experiment="2W5")|> rename(methane="y[, 11]")
+y12<-as.data.frame(y[,12])|> mutate(Experiment="2W7.5")|> rename(methane="y[, 12]")
 
 df_sample<-as_tibble(rbind(y1,y2,y3,y4,y5,y6,y7,y8,y9,y10,y11,y12))
 
@@ -88,11 +90,14 @@ df<-full_join(df_sample, df_metals, relationship="many-to-many")
 df2<-df |> #filter(metalli_tyyppi=="Fe"| metalli_tyyppi=="Cu") |> 
   mutate(mtype=as.factor(metalli_tyyppi))
 
-ggplot(df2, aes(x=metalli_pitoisuus, y=methane, col=koe)) + 
+ggplot(df2, aes(x=metalli_pitoisuus, y=methane, col=Experiment)) + 
   geom_point(alpha=0.1)+
   facet_wrap(~mtype, scales="free")+
   guides(colour = guide_legend
-         (override.aes = list(alpha = 1)))
+         (override.aes = list(alpha = 1)))+
+  #ggtitle(label) # for the main title
+  xlab("Metal concentration (mg/kg)" )+ # for the x axis label
+  ylab("Methane production potential") # for the y axis label
 
 round(cor(metallit[,2:10]),2)
 round(cor(metallit2[,2:10]),2)
