@@ -3,7 +3,7 @@ library(runjags)
 load.module("mix")
 #library(xlsx)
 library(tidyverse)
-library(ggmcmc)
+#library(ggmcmc)
 library(readxl)
 library(forcats)
 library(lubridate)
@@ -11,12 +11,12 @@ library(stringr)
 require(gridExtra)
 
 source("tidy-functions.r")
-source("C:/tmp/path-main.r")
+#source("C:/tmp/path-main.r")
 
 
-koe1<-read_xlsx(paste0(pathMain,"01-Projects/BMP/data/2023/KOE_1.xlsx"), range="B4:AE36", col_names = F, sheet = "Koe1")
-koe2<-read_xlsx(paste0(pathMain,"01-Projects/BMP/data/2023/KOE_2.xlsx"), range="B4:X31", col_names = F, sheet = "Koe2")
-koe3<-read_xlsx(paste0(pathMain,"01-Projects/BMP/data/2023/KOE_3_mod.xlsx"), range="B4:AG52", col_names = F, sheet = "Koe3", na="")
+koe1<-read_xlsx(paste0("../../01-Projects/BMP/data/2023/KOE_1.xlsx"), range="B4:AE36", col_names = F, sheet = "Koe1")
+koe2<-read_xlsx(paste0("../../01-Projects/BMP/data/2023/KOE_2.xlsx"), range="B4:X31", col_names = F, sheet = "Koe2")
+koe3<-read_xlsx(paste0("../../01-Projects/BMP/data/2023/KOE_3_mod.xlsx"), range="B4:AG52", col_names = F, sheet = "Koe3", na="")
 
 # Ymppisarjat:
 n_days_y<-c()
@@ -74,11 +74,19 @@ tmpy3<-df_y3%>%
 ExpName1<-c("BW1", "1A1", "1A2", "1A3","1A4",
             "1B1","1B2","1B3", "1B4")
 
-ExpName2<-c("BW2", "2A1", "2A2", "2A3")
+# ExpName2<-c("BW2", "2A1", "2A2", "2A3")
+# 
+# ExpName3<-c("BW3", "3A1", "3A2", "3A3",
+#             "3B1","3B2","3B3",
+#             "3C1","3C2","3C3")
+# 
 
-ExpName3<-c("BW3", "3A1", "3A2", "3A3",
-            "3B1","3B2","3B3",
-            "3C1","3C2","3C3")
+ExpName2<-c("1_0", "1WP10", "1WP16.7", "1WP23.3")
+
+ExpName3<-c("2_0", "2P2.5", "2P5", "2P7.5",
+            "2WP2.5","2WP5","2WP7.5",
+            "2W2.5","2W5","2W7.5")
+
 
 n_types<-c()
 n_types[1]<-length(ExpName1)
